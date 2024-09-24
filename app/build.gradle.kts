@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
     id("androidx.navigation.safeargs.kotlin")
+    alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 }
 
 android {
@@ -66,7 +67,9 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:1.2.3")
     implementation("androidx.camera:camera-video:1.2.3")
     implementation("androidx.camera:camera-view:1.2.3")
+/*
     implementation(libs.androidx.camera.mlkit.vision.v100beta07)
+*/
 
     //googlemaps
     implementation(libs.play.services.maps)
@@ -85,6 +88,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
 
     //testing
     testImplementation(libs.junit)
