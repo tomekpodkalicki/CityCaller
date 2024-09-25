@@ -62,11 +62,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     //camera
-    implementation("androidx.camera:camera-core:1.2.3")
-    implementation("androidx.camera:camera-camera2:1.2.3")
-    implementation("androidx.camera:camera-lifecycle:1.2.3")
-    implementation("androidx.camera:camera-video:1.2.3")
-    implementation("androidx.camera:camera-view:1.2.3")
+    implementation(libs.androidx.camera.camera2.v123)
+    implementation(libs.androidx.camera.lifecycle.v123)
+    implementation(libs.androidx.camera.view.v134)
 /*
     implementation(libs.androidx.camera.mlkit.vision.v100beta07)
 */
@@ -78,6 +76,9 @@ dependencies {
 
 
     //firebase
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.storage)
+    implementation(libs.firebase.firestore)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
 
@@ -90,6 +91,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.lifecycle.livedata.ktx)
+
 
     //testing
     testImplementation(libs.junit)

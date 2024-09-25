@@ -1,12 +1,11 @@
 package pl.podkal.citycaller.ui.fragments.registration_page
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import pl.podkal.citycaller.R
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import pl.podkal.citycaller.databinding.FragmentRegistrationBinding
 
 
@@ -21,6 +20,11 @@ class RegistrationFragment : Fragment() {
     ): View {
         _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        vm.registerNewUserByEmail("1@wp.pl", "123456", "Asia")
     }
 
     override fun onDestroy() {

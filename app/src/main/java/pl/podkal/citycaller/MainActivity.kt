@@ -1,10 +1,11 @@
-package pl.podkal.citycaller.ui.activities
+package pl.podkal.citycaller
 
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.maps.GoogleMap
 import pl.podkal.citycaller.databinding.ActivityMainBinding
+import pl.podkal.citycaller.ui.activities.MainViewModel
+import pl.podkal.citycaller.ui.fragments.registration_page.RegistrationFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,6 +17,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val frag = RegistrationFragment()
+        supportFragmentManager.beginTransaction().add(frag,"").commit()
     }
 }
 
