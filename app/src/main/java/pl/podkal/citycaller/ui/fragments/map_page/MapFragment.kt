@@ -1,4 +1,4 @@
-package pl.podkal.citycaller.ui.fragments.incidents_page
+package pl.podkal.citycaller.ui.fragments.map_page
 
 import androidx.fragment.app.viewModels
 import android.os.Bundle
@@ -6,21 +6,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.maps.MapView
 import pl.podkal.citycaller.R
-import pl.podkal.citycaller.databinding.FragmentIncidentsBinding
+import pl.podkal.citycaller.databinding.FragmentMapBinding
 
-class IncidentsFragment : Fragment() {
-    private var _binding: FragmentIncidentsBinding? = null
-    private val binding get() = _binding!!
-    private val vm by viewModels<IncidentsViewModel>()
+class MapFragment : Fragment() {
+    private var _binding: FragmentMapBinding? = null
+    private val binding get() = null
+    private val vm by viewModels<MapViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentIncidentsBinding.inflate(inflater, container, false)
-        return binding.root
-
+        return inflater.inflate(R.layout.fragment_map, container, false)
     }
 
     override fun onDestroy() {

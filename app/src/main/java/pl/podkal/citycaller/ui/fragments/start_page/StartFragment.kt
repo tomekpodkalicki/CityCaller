@@ -1,4 +1,4 @@
-package pl.podkal.citycaller.ui.fragments.incidents_page
+package pl.podkal.citycaller.ui.fragments.start_page
 
 import androidx.fragment.app.viewModels
 import android.os.Bundle
@@ -7,20 +7,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.podkal.citycaller.R
-import pl.podkal.citycaller.databinding.FragmentIncidentsBinding
+import pl.podkal.citycaller.databinding.FragmentStartBinding
 
-class IncidentsFragment : Fragment() {
-    private var _binding: FragmentIncidentsBinding? = null
+class StartFragment : Fragment() {
+    private var _binding: FragmentStartBinding? = null
     private val binding get() = _binding!!
-    private val vm by viewModels<IncidentsViewModel>()
+    private val vm by viewModels<StartViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentIncidentsBinding.inflate(inflater, container, false)
-        return binding.root
-
+        return inflater.inflate(R.layout.fragment_start, container, false)
     }
 
     override fun onDestroy() {

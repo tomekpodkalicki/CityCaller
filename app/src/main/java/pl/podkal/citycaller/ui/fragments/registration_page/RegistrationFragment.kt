@@ -1,4 +1,4 @@
-package pl.podkal.citycaller.ui.fragments.incidents_page
+package pl.podkal.citycaller.ui.fragments.registration_page
 
 import androidx.fragment.app.viewModels
 import android.os.Bundle
@@ -7,20 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.podkal.citycaller.R
-import pl.podkal.citycaller.databinding.FragmentIncidentsBinding
+import pl.podkal.citycaller.databinding.FragmentRegistrationBinding
 
-class IncidentsFragment : Fragment() {
-    private var _binding: FragmentIncidentsBinding? = null
+
+class RegistrationFragment : Fragment() {
+    private var _binding: FragmentRegistrationBinding? = null
     private val binding get() = _binding!!
-    private val vm by viewModels<IncidentsViewModel>()
+    private val vm by viewModels<RegistrationViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentIncidentsBinding.inflate(inflater, container, false)
+        _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onDestroy() {
