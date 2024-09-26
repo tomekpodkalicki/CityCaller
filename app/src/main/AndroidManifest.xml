@@ -29,7 +29,7 @@
             android:value="AIzaSyDQic0tvTj-EwCr3UTyPb2Pf-FIU8erSnE" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,7 +38,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activities.MapsActivity"
+        <activity android:name=".ui.MapsActivity"
             android:exported="false" />
     </application>
 

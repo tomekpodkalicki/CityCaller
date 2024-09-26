@@ -1,10 +1,9 @@
-package pl.podkal.citycaller
+package pl.podkal.citycaller.activities
 
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import pl.podkal.citycaller.databinding.ActivityMainBinding
-import pl.podkal.citycaller.ui.activities.MainViewModel
 import pl.podkal.citycaller.ui.fragments.registration_page.RegistrationFragment
 
 class MainActivity : AppCompatActivity() {

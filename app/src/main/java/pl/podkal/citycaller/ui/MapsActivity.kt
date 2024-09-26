@@ -1,4 +1,4 @@
-package pl.podkal.citycaller.ui.activities
+package pl.podkal.citycaller.ui
 
 import androidx.fragment.app.Fragment
 
