@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import pl.podkal.citycaller.data.models.IncidentModel
 import pl.podkal.citycaller.data.repository.FirebaseRepository
+import java.io.File
 
 class MainViewModel: ViewModel() {
 
@@ -24,7 +25,8 @@ class MainViewModel: ViewModel() {
     private val _allIncidents = MutableStateFlow<List<IncidentModel>>(emptyList())
     val allIncidents = _allIncidents.asStateFlow()
 
-    private fun getCurrentUser(): FirebaseUser? = repos.getCurrentUser()
+    private fun getCurrentUser():
+            FirebaseUser? = repos.getCurrentUser()
 
     fun registerNewUserByEmail(name: String,
                                email: String,
@@ -37,7 +39,9 @@ class MainViewModel: ViewModel() {
        }
     }
 
-    fun loginUser( email: String, password: String) {
+    fun loginUser(
+        email: String,
+        password: String) {
         CoroutineScope(Dispatchers.IO ).launch {
             _user.emit(repos.loginUser(email, password))
         }
@@ -54,6 +58,13 @@ class MainViewModel: ViewModel() {
     fun getUserIncidents(userId: String?): Flow<List<IncidentModel>>{
         return flow {
             emit(repos.getUserIncidents(userId))
+        }
+    }
+
+    fun insertIncident(incidentModel: IncidentModel, path: String){
+        CoroutineScope(Dispatchers.IO).launch {
+            val file = File(path)
+            repos.uploadIncidentData(incidentModel, file)
         }
     }
 }

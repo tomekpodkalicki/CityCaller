@@ -1,19 +1,23 @@
 package pl.podkal.citycaller.data.repository
 
+import android.net.Uri
 import androidx.privacysandbox.ads.adservices.adid.AdId
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObjects
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import pl.podkal.citycaller.data.models.IncidentModel
 import pl.podkal.citycaller.data.models.UserModel
+import java.io.File
 
 class FirebaseRepository {
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
+    private val storage = FirebaseStorage.getInstance()
 
     fun getCurrentUser() = auth.currentUser
 
@@ -81,4 +85,41 @@ class FirebaseRepository {
             .toObjects(IncidentModel::class.java)
             .toList()
     }
+
+    suspend fun uploadIncidentData(
+        incidentModel: IncidentModel,
+        file: File
+    ) {
+        val fileUri = Uri.fromFile(file)
+        val refe = "images/${incidentModel.userId}/${fileUri.lastPathSegment}"
+        val photoRefe = storage.reference
+            .child(refe)
+
+        photoRefe.putFile(fileUri)
+            .await()
+        
+        insertIncident(incidentModel, refe)
+
+    }
+
+    private suspend fun insertIncident(incidentModel: IncidentModel, refe: String) {
+
+        val downloadUrl = storage
+            .getReference(refe)
+            .downloadUrl
+            .await()
+            .toString()
+
+        incidentModel.imageUrl = downloadUrl
+
+        db.collection("incidents")
+            .document()
+            .also {
+                incidentModel.apply {
+                    id = it.id
+                }
+                it.set(incidentModel)
+            }
+    }
+
 }

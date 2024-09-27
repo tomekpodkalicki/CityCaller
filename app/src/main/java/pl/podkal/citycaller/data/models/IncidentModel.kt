@@ -5,6 +5,6 @@ data class IncidentModel(
     val userId: String? = null,
     val desc: String? = null,
     val location: LocationModel? = null,
-    val imageUrl: String? = null,
+    var imageUrl: String? = null,
     val reactions: Int? = null
     )
