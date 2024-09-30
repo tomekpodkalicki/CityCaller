@@ -10,7 +10,6 @@ android {
     namespace = "pl.podkal.citycaller"
     compileSdk = 34
 
-
     defaultConfig {
         applicationId = "pl.podkal.citycaller"
         minSdk = 26
@@ -30,10 +29,12 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
     }
@@ -44,45 +45,41 @@ android {
 }
 
 dependencies {
-    //navi
+    // Navigation
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.navigation.dynamic.features.fragment)
 
-    //glide
+    // Glide
     implementation(libs.glide)
 
-    //coroutine
+    // Coroutine
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.play.services)
 
-    //lifecycle
+    // Lifecycle
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
-    //camera
-    implementation(libs.androidx.camera.camera2.v123)
-    implementation(libs.androidx.camera.lifecycle.v123)
-    implementation(libs.androidx.camera.view.v134)
-/*
-    implementation(libs.androidx.camera.mlkit.vision.v100beta07)
-*/
+    // Camera
+    implementation(libs.androidx.camera.camera2)  // Fixed
+    implementation(libs.androidx.camera.lifecycle)  // Fixed
+    implementation(libs.androidx.camera.view)  // Fixed
+    // implementation(libs.androidx.camera.mlkit.vision) // Commented out as you did
 
-    //googlemaps
+    // Google Maps
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
 
-
-
-    //firebase
+    // Firebase
     implementation(libs.firebase.auth.ktx)
-    implementation(libs.firebase.storage)
-    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.firestore.ktx)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
 
-    //ktx
+    // KTX
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -91,9 +88,10 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.lifecycle.livedata.ktx)
+    //implementation("androidx.media3:media3-common-ktx:1.3.1")
+    implementation(libs.firebase.crashlytics.buildtools)
 
-
-    //testing
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
