@@ -6,6 +6,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.IBinder
@@ -33,6 +34,7 @@ import kotlin.math.sqrt
 class LocalizationBackgroundService : Service() {
 
     private val LOC_SERVICE_ID  = 1
+    private val LOC_SERVICE_DANGER_ID  = 2
     private val LOC_CHANNEL_ID = "LOC_CHANNEL_ID"
     private val UPDATE_INTERVAL_LOCATION: Long = 1_000 * 10
     private lateinit var locationRequest: LocationRequest
@@ -47,10 +49,29 @@ class LocalizationBackgroundService : Service() {
                 locationResult.lastLocation?.longitude
             )
             CoroutineScope(Dispatchers.IO).launch {
-                if(isNearIncident(locationModel)) Log.d("LOC_D", "danger!")
+                if(isNearIncident(locationModel)) createWarningNotification()
 
             }
         }
+    }
+
+    private fun createWarningNotification() {
+
+        val builder = NotificationCompat.Builder(this, LOC_CHANNEL_ID)
+            .setContentTitle("Uwaga, jestes w poblizu wydarzenia!")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .build()
+
+        val channel = NotificationChannel(
+            LOC_CHANNEL_ID,
+            "LOC SERVICE",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+
+        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.createNotificationChannel(channel)
+        manager.notify(LOC_SERVICE_DANGER_ID, builder)
     }
 
     private suspend fun isNearIncident(locationModel: LocationModel): Boolean {
@@ -184,6 +205,7 @@ class LocalizationBackgroundService : Service() {
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("Serwis lokalizujacy")
             .addAction(R.drawable.ic_launcher_foreground, "Zastopuj", pendingStopIntent)
+            .setOngoing(true)
             .build()
 
         startForeground(LOC_SERVICE_ID, notifcation)

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <style name = "Theme.CityCallSplashScreen" parent = "Theme.SplashScreen">
+
+        <item name = "windowSplashScreenAnimatedIcon">@color/_orange</item>
+        <item name = "windowSplashScreenBackground">@drawable/ic_launcher_background</item>
+        <item name = "windowSplashScreenAnimationDuration">1000</item>
+        <item name = "postSplashScreenTheme">AppTheme.CityCaller"></item>
+
+
+    </style>
+
+
+</resources>

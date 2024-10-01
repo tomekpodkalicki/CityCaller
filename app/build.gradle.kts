@@ -90,6 +90,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     //implementation("androidx.media3:media3-common-ktx:1.3.1")
     implementation(libs.firebase.crashlytics.buildtools)
+    // SPLASH
+    implementation (libs.androidx.core.splashscreen)
 
     // Testing
     testImplementation(libs.junit)

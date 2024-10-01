@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/detailFragment">
+
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="pl.podkal.citycaller.ui.fragments.detail_page.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" />
+    <fragment
+        android:id="@+id/incidentsFragment"
+        android:name="pl.podkal.citycaller.ui.fragments.incidents_page.IncidentsFragment"
+        android:label="fragment_incidents"
+        tools:layout="@layout/fragment_incidents" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="pl.podkal.citycaller.ui.fragments.login_page.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="pl.podkal.citycaller.ui.fragments.map_page.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/newIncidentFragment"
+        android:name="pl.podkal.citycaller.ui.fragments.new_incident_page.NewIncidentFragment"
+        android:label="fragment_new_incident"
+        tools:layout="@layout/fragment_new_incident" />
+    <fragment
+        android:id="@+id/photoFragment"
+        android:name="pl.podkal.citycaller.ui.fragments.Photo_page.PhotoFragment"
+        android:label="fragment_photo"
+        tools:layout="@layout/fragment_photo" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="pl.podkal.citycaller.ui.fragments.profile_page.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="pl.podkal.citycaller.ui.fragments.registration_page.RegistrationFragment"
+        android:label="fragment_registration"
+        tools:layout="@layout/fragment_registration" />
+    <fragment
+        android:id="@+id/startFragment"
+        android:name="pl.podkal.citycaller.ui.fragments.start_page.StartFragment"
+        android:label="fragment_start"
+        tools:layout="@layout/fragment_start" />
+</navigation>
