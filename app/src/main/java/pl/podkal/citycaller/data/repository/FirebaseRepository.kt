@@ -122,4 +122,9 @@ class FirebaseRepository {
             }
     }
 
+    fun singOut() {
+        auth.signOut()
+    }
+
+
 }

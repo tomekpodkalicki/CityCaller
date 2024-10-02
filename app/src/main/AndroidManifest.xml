@@ -22,7 +22,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CityCallSplashScreen"
+        android:theme="@style/Theme.CitySplashScreen"
         tools:targetApi="31">
         <service
             android:name=".services.LocalizationBackgroundService"

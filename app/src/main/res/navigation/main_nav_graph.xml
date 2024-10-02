@@ -3,13 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/detailFragment">
+    app:startDestination="@id/startFragment">
 
-    <fragment
-        android:id="@+id/detailFragment"
-        android:name="pl.podkal.citycaller.ui.fragments.detail_page.DetailFragment"
-        android:label="fragment_detail"
-        tools:layout="@layout/fragment_detail" />
     <fragment
         android:id="@+id/incidentsFragment"
         android:name="pl.podkal.citycaller.ui.fragments.incidents_page.IncidentsFragment"
@@ -19,17 +14,42 @@
         android:id="@+id/loginFragment"
         android:name="pl.podkal.citycaller.ui.fragments.login_page.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <action
+            app:popUpTo="@id/main_nav_graph"
+            app:popUpToInclusive="true"
+            android:id="@+id/action_loginFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <action
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"
+            android:id="@+id/action_loginFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mapFragment"
         android:name="pl.podkal.citycaller.ui.fragments.map_page.MapFragment"
         android:label="fragment_map"
-        tools:layout="@layout/fragment_map" />
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_mapFragment_to_newIncidentFragment"
+            app:destination="@id/newIncidentFragment" />
+        <action
+            android:id="@+id/action_mapFragment_to_incidentsFragment"
+            app:destination="@id/incidentsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/newIncidentFragment"
         android:name="pl.podkal.citycaller.ui.fragments.new_incident_page.NewIncidentFragment"
         android:label="fragment_new_incident"
-        tools:layout="@layout/fragment_new_incident" />
+        tools:layout="@layout/fragment_new_incident" >
+        <action
+            android:id="@+id/action_newIncidentFragment_to_photoFragment"
+            app:destination="@id/photoFragment" />
+    </fragment>
     <fragment
         android:id="@+id/photoFragment"
         android:name="pl.podkal.citycaller.ui.fragments.Photo_page.PhotoFragment"
@@ -44,10 +64,34 @@
         android:id="@+id/registrationFragment"
         android:name="pl.podkal.citycaller.ui.fragments.registration_page.RegistrationFragment"
         android:label="fragment_registration"
-        tools:layout="@layout/fragment_registration" />
+        tools:layout="@layout/fragment_registration" >
+        <action
+            app:popUpTo="@id/main_nav_graph"
+            app:popUpToInclusive="true"
+            android:id="@+id/action_registrationFragment_to_mapFragment"
+            app:destination="@id/mapFragment"
+            />
+        <action
+            app:popUpTo="@id/registrationFragment"
+            app:popUpToInclusive="true"
+            android:id="@+id/action_registrationFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
     <fragment
         android:id="@+id/startFragment"
         android:name="pl.podkal.citycaller.ui.fragments.start_page.StartFragment"
         android:label="fragment_start"
-        tools:layout="@layout/fragment_start" />
+        tools:layout="@layout/fragment_start" >
+        <action
+            android:id="@+id/action_startFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
+        <action
+            android:id="@+id/action_startFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_startFragment_to_mapFragment"
+            app:popUpTo="@id/main_nav_graph"
+            app:popUpToInclusive="true"
+            app:destination="@id/mapFragment" />
+    </fragment>
 </navigation>

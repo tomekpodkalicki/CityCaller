@@ -19,6 +19,12 @@ class MainViewModel: ViewModel() {
 
     private val repos = FirebaseRepository()
 
+    private val _bottomBar = MutableStateFlow(false)
+    val bottomBar = _bottomBar.asStateFlow()
+    fun setBottomBarVisible(bool: Boolean) {
+        _bottomBar.value = bool
+    }
+
     private val _user = MutableStateFlow(getCurrentUser())
     val user = _user.asStateFlow()
 
@@ -32,11 +38,13 @@ class MainViewModel: ViewModel() {
                                email: String,
                                password: String){
        CoroutineScope(Dispatchers.IO).launch {
-           val newUser =  repos.registerNewUserByEmail(
-               name,
-               email ,
-               password)
+           val newUser =  repos.registerNewUserByEmail(email = email,
+               password = password,
+               name = name)
+
+           _user.emit(newUser)
        }
+
     }
 
     fun loginUser(
@@ -66,5 +74,9 @@ class MainViewModel: ViewModel() {
             val file = File(path)
             repos.uploadIncidentData(incidentModel, file)
         }
+    }
+
+    fun signOut() {
+        repos.singOut()
     }
 }

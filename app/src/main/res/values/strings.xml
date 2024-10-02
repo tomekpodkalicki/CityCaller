@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">CityCaller</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="statuteText">Klikając Rozpocznij teraz akceptujesz <font color="#f46700">regulamin</font> oraz <font color="#f46700">politykę prywatności</font> aplikacji inciUP</string>
+    <string name="loginText"><font color="#3d3d3d"> Posiadasz już konto?</font> <font color="#f46700"><b>Zaloguj się</b></font> </string>
+    <string name="loginTextWhite"><font color="#ffffff"> Posiadasz już konto?</font> <font color="#f46700"><b>Zaloguj się</b></font> </string>
+    <string name="registerText"><font color="#3d3d3d">Nie masz konta?</font> <font color="#f46700"><b>Zarejestruj się </b></font> </string>
+    <string name="your_incidents">Twoje zgłoszenia</string>
 </resources>

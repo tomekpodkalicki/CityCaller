@@ -1,13 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_startt"
     tools:context=".ui.fragments.start_page.StartFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/materialTextView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="220dp"
+        android:layout_marginEnd="116dp"
+        android:elevation="10dp"
+        android:text="inciUP"
+        android:textAlignment="center"
+        android:textColor="@color/_orange"
+        android:textSize="60sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:elevation="10dp"
+        android:text="Bądź na bieząco!"
+        android:textAlignment="center"
+        android:textColor="@color/_orange"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/materialTextView3"
+        app:layout_constraintStart_toStartOf="@+id/materialTextView3"
+        app:layout_constraintTop_toBottomOf="@+id/materialTextView3" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/welcomeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="84dp"
+        android:text="Raportuj wszystkie wydarzenia w Twoim\n mieście bezpośrednio z aplikacji"
+        android:textAlignment="center"
+        android:textColor="@color/_orange"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/loginGoogleBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/loginGoogleBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginVertical="5dp"
+        android:background="@drawable/border_shape"
+        android:backgroundTint="@color/white"
+        android:drawableLeft="@drawable/google_icon"
+        android:paddingVertical="10dp"
+        android:paddingStart="15dp"
+        android:text="Kontynuuj za pomocą Google"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/loginFbBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/loginFbBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginVertical="5dp"
+        android:background="@drawable/border_shape"
+        android:backgroundTint="@color/white"
+        android:drawableLeft="@drawable/fb_icon"
+        android:paddingVertical="10dp"
+        android:paddingStart="15dp"
+        android:text="Kontynuuj za pomocą Facebooka"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/registrationBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_marginBottom="24dp"
+        android:id="@+id/registrationBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:background="@drawable/border_shape_orange"
+        android:backgroundTint="@color/_orange"
+        android:drawableLeft="@drawable/email_icon"
+        android:paddingVertical="10dp"
+        android:paddingStart="15dp"
+        android:text="Zarejestruj się za pomocą e-mail"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/loginBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/loginBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="56dp"
+        android:text="@string/loginTextWhite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
