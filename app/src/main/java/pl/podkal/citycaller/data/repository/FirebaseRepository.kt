@@ -1,6 +1,7 @@
 package pl.podkal.citycaller.data.repository
 
 import android.net.Uri
+import android.util.Log
 import androidx.privacysandbox.ads.adservices.adid.AdId
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -73,6 +74,8 @@ class FirebaseRepository {
             .await()
             .toObjects(IncidentModel::class.java)
             .toList()
+
+
     }
 
     suspend fun getUserIncidents(userId: String?): List<IncidentModel> {

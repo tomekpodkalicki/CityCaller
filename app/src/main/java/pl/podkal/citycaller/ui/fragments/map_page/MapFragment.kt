@@ -14,8 +14,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.flow.collectLatest
 import pl.podkal.citycaller.activities.MainViewModel
+import pl.podkal.citycaller.databinding.CustomInfoWindowBinding
 import pl.podkal.citycaller.databinding.FragmentMapBinding
 import pl.podkal.citycaller.repeatedStarted
+import pl.podkal.citycaller.ui.adapters.WindowAdapter
 import pl.podkal.citycaller.viewLifecycleLaunch
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -55,16 +57,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         gmap = googleMap
 
+        val customInfoAdap = WindowAdapter(requireContext())
+
+        gmap.setInfoWindowAdapter(customInfoAdap)
+
         viewLifecycleLaunch {
             repeatedStarted {
                 mainVm.allIncidents.collectLatest { list ->
                     list
                         .filter { it.location?.lat != null && it.location?.lng != null}
                         .onEach { incident ->
-
-                            val latlng = LatLng(incident.location?.lat!!, incident.location?.lng!!)
+                            val latlng = LatLng(
+                                incident.location?.lat!!, incident.location?.lng!!)
                             val markerOpt = MarkerOptions()
                                 .position(latlng)
+                                .snippet(incident.reactions?.toString() ?: "0")
 
                             val marker = googleMap.addMarker(markerOpt)
                         }
