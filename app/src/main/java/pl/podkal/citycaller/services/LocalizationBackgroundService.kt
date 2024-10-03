@@ -89,15 +89,15 @@ class LocalizationBackgroundService : Service() {
     private fun calculateDistance(userLocation: LocationModel, location: LocationModel?): Double {
 
         userLocation.lat?: return -1.0
-        userLocation.long?: return -1.0
+        userLocation.lng?: return -1.0
         val userLat = userLocation.lat
-        val userLng = userLocation.long
+        val userLng = userLocation.lng
 
         location?.lat?: return -1.0
-        location?.long?: return -1.0
+        location?.lng?: return -1.0
 
         val venueLat = location.lat
-        val venueLng = location.long
+        val venueLng = location.lng
 
         val latDistance = Math.toRadians(userLat - venueLat)
         val longDistance= Math.toRadians(userLng - venueLng)

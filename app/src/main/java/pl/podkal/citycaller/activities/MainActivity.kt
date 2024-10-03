@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         setupUi()
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mainVm.bottomBar.collectLatest {
                     hideBottomBar(it)
                 }

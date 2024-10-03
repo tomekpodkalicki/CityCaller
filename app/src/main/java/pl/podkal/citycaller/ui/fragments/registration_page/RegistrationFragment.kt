@@ -35,6 +35,7 @@ class RegistrationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
        setupUi()
         setupCollectors()
+
     }
 
     private fun setupCollectors() {
@@ -43,7 +44,8 @@ class RegistrationFragment : Fragment() {
                 mainVm.user.collectLatest { user ->
                     if (user!= null) {
                         Log.d("REG_D", "${user.email}")
-                       /* findNavController().navigate(R.id.action_registrationFragment_to_mapFragment)*/
+                        Log.d("REG_D", "${user.uid}")
+                       findNavController().navigate(R.id.action_registrationFragment_to_loginFragment)
                     }
                 }
             }

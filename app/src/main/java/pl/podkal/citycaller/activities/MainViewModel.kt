@@ -15,9 +15,18 @@ import pl.podkal.citycaller.data.models.IncidentModel
 import pl.podkal.citycaller.data.repository.FirebaseRepository
 import java.io.File
 
+sealed class LoginState {
+    object Loading: LoginState()
+    data class Success(val user: FirebaseUser) : LoginState()
+    object Failure: LoginState()
+}
+
 class MainViewModel: ViewModel() {
 
     private val repos = FirebaseRepository()
+
+    private val _loginState = MutableStateFlow<LoginState?>(null)
+    val loginState = _loginState.asStateFlow()
 
     private val _bottomBar = MutableStateFlow(false)
     val bottomBar = _bottomBar.asStateFlow()
@@ -50,8 +59,17 @@ class MainViewModel: ViewModel() {
     fun loginUser(
         email: String,
         password: String) {
-        CoroutineScope(Dispatchers.IO ).launch {
-            _user.emit(repos.loginUser(email, password))
+        viewModelScope.launch {
+            _loginState.emit(LoginState.Loading)
+            try {
+                val user = repos.loginUser(email, password)
+                if (user != null ) {
+                    _loginState.emit(LoginState.Success(user))
+                } else { _loginState.emit(LoginState.Failure)
+                }
+            } catch (e: Exception) {
+                _loginState.emit(LoginState.Failure)
+            }
         }
     }
 

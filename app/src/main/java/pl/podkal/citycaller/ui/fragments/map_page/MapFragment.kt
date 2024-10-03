@@ -1,23 +1,28 @@
 package pl.podkal.citycaller.ui.fragments.map_page
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import pl.podkal.citycaller.R
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.coroutines.flow.collectLatest
 import pl.podkal.citycaller.activities.MainViewModel
 import pl.podkal.citycaller.databinding.FragmentMapBinding
+import pl.podkal.citycaller.repeatedStarted
+import pl.podkal.citycaller.viewLifecycleLaunch
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
     private val vm by viewModels<MapViewModel>()
-    private val mainVm by viewModels<MainViewModel>()
+    private val mainVm by activityViewModels<MainViewModel>()
     private lateinit var gmap: GoogleMap
 
     override fun onCreateView(
@@ -31,8 +36,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainVm.setBottomBarVisible(true)
-
         setupMap(savedInstanceState)
+        mainVm.loadAllIncidents()
 
     }
 
@@ -49,5 +54,24 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         gmap = googleMap
+
+        viewLifecycleLaunch {
+            repeatedStarted {
+                mainVm.allIncidents.collectLatest { list ->
+                    list
+                        .filter { it.location?.lat != null && it.location?.lng != null}
+                        .onEach { incident ->
+
+                            val latlng = LatLng(incident.location?.lat!!, incident.location?.lng!!)
+                            val markerOpt = MarkerOptions()
+                                .position(latlng)
+
+                            val marker = googleMap.addMarker(markerOpt)
+                        }
+
+                }
+
+            }
+        }
     }
 }

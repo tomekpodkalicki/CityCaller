@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import pl.podkal.citycaller.R
 import pl.podkal.citycaller.activities.MainViewModel
@@ -15,7 +16,7 @@ class StartFragment : Fragment() {
     private var _binding: FragmentStartBinding? = null
     private val binding get() = _binding!!
     private val vm by viewModels<StartViewModel>()
-    private val mainVm by viewModels<MainViewModel>()
+    private val mainVm by activityViewModels<MainViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,8 +29,8 @@ class StartFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-    mainVm.signOut()
         setupUi()
+        mainVm.signOut()
     }
 
     private fun setupUi() {
