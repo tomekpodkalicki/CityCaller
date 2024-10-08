@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupUi() {
         setupBottomMenu()
+
     }
 
     private fun setupBottomMenu() {

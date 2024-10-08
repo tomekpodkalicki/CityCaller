@@ -128,9 +128,10 @@ class LocalizationBackgroundService : Service() {
     }
 
     private fun initData() {
-        val locationRequest = LocationRequest.Builder(
+        locationRequest = LocationRequest.Builder(
             UPDATE_INTERVAL_LOCATION
         )
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
             .build()
 
         susedLocation = LocationServices.getFusedLocationProviderClient(applicationContext)

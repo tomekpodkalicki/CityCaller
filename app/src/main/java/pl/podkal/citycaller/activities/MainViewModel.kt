@@ -23,6 +23,8 @@ sealed class LoginState {
 
 class MainViewModel: ViewModel() {
 
+    var isLocalizationStarted = false
+
     private val repos = FirebaseRepository()
 
     private val _loginState = MutableStateFlow<LoginState?>(null)
@@ -97,4 +99,6 @@ class MainViewModel: ViewModel() {
     fun signOut() {
         repos.singOut()
     }
+
+
 }

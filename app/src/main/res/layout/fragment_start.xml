@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_startt"
+    android:background="@drawable/start_background"
     tools:context=".ui.fragments.start_page.StartFragment">
 
     <androidx.appcompat.widget.AppCompatTextView
