@@ -23,6 +23,8 @@ sealed class LoginState {
 
 class MainViewModel: ViewModel() {
 
+    var photoPath = ""
+
     var isLocalizationStarted = false
 
     private val repos = FirebaseRepository()

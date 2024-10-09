@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import pl.podkal.citycaller.R
 import pl.podkal.citycaller.databinding.FragmentNewIncidentBinding
 
@@ -20,6 +21,14 @@ class NewIncidentFragment : Fragment() {
     ): View {
         _binding = FragmentNewIncidentBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.addPhotoBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_newIncidentFragment_to_photoFragment)
+        }
     }
 
     override fun onDestroy() {

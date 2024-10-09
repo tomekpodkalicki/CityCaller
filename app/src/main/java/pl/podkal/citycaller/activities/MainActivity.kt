@@ -10,9 +10,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.navOptions
 import androidx.navigation.ui.NavigationUI
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import pl.podkal.citycaller.R
 import pl.podkal.citycaller.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -47,7 +49,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupUi() {
         setupBottomMenu()
+        setupAddNewAccident()
 
+    }
+
+    private fun setupAddNewAccident() {
+        binding.addNewIncidentFab.setOnClickListener{
+            mainVm.setBottomBarVisible(false)
+            navController.navigate(
+                R.id.newIncidentFragment,
+                null,
+                navOptions {
+                    anim{
+                        enter = androidx.fragment.R.animator.fragment_open_enter
+                        exit = androidx.fragment.R.animator.fragment_close_exit
+                    }
+
+                })
+        }
     }
 
     private fun setupBottomMenu() {
