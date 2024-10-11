@@ -32,7 +32,6 @@ import pl.podkal.citycaller.databinding.FragmentMapBinding
 import pl.podkal.citycaller.repeatedStarted
 import pl.podkal.citycaller.services.LocalizationBackgroundService
 import pl.podkal.citycaller.ui.adapters.WindowAdapter
-import pl.podkal.citycaller.viewLifecycleLaunch
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     private var _binding: FragmentMapBinding? = null
@@ -116,7 +115,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         gmap.setInfoWindowAdapter(customInfoAdap)
 
-        viewLifecycleLaunch {
             repeatedStarted {
                 mainVm.allIncidents.collectLatest { list ->
                     list
@@ -143,7 +141,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             }
         }
-    }
 
     private fun loadMarkerIcon(marker: Marker?,
                                context: Context,

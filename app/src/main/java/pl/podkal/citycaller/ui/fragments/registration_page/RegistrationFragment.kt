@@ -14,7 +14,6 @@ import pl.podkal.citycaller.R
 import pl.podkal.citycaller.activities.MainViewModel
 import pl.podkal.citycaller.databinding.FragmentRegistrationBinding
 import pl.podkal.citycaller.repeatedStarted
-import pl.podkal.citycaller.viewLifecycleLaunch
 
 
 class RegistrationFragment : Fragment() {
@@ -39,7 +38,6 @@ class RegistrationFragment : Fragment() {
     }
 
     private fun setupCollectors() {
-        viewLifecycleLaunch {
             repeatedStarted {
                 mainVm.user.collectLatest { user ->
                     if (user!= null) {
@@ -50,7 +48,6 @@ class RegistrationFragment : Fragment() {
                 }
             }
         }
-    }
 
     private fun setupUi() {
         binding.loginBtn.setOnClickListener{
