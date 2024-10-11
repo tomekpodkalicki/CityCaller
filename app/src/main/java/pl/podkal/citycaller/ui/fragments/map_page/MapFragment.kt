@@ -1,7 +1,9 @@
 package pl.podkal.citycaller.ui.fragments.map_page
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -56,6 +58,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mainVm.loadAllIncidents()
         setupUi()
 
+        requireActivity().registerReceiver(localStopReceiver, IntentFilter("pl.podkal.citycaller.LOCALIZATION_STOPPED"),
+            Context.RECEIVER_NOT_EXPORTED)
+
     }
 
     private fun setupUi() {
@@ -106,6 +111,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+
+        requireActivity().unregisterReceiver(localStopReceiver)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -187,6 +194,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 // Handle the case where permission is denied
                 Toast.makeText(requireContext(), "Location permission is required", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private val localStopReceiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            binding.startLocalizationBtn.setImageResource(R.drawable.navigate_stop_img)
+            mainVm.isLocalizationStarted = false
         }
     }
 }

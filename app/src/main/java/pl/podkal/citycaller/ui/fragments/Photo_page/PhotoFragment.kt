@@ -17,6 +17,7 @@ import androidx.camera.core.UseCaseGroup
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.images.Size
 import pl.podkal.citycaller.R
@@ -30,7 +31,7 @@ class PhotoFragment : Fragment() {
     private var _binding: FragmentPhotoBinding? = null
     private val binding get() = _binding!!
     private val vm by viewModels<PhotoViewModel>()
-    private  val mainVm by viewModels<MainViewModel>()
+    private  val mainVm by activityViewModels<MainViewModel>()
     private val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     private val c = Calendar.getInstance()
 

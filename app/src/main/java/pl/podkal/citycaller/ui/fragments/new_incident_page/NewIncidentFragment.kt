@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +13,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.collectLatest
 import pl.podkal.citycaller.R
 import pl.podkal.citycaller.activities.MainViewModel
+import pl.podkal.citycaller.data.models.IncidentModel
 import pl.podkal.citycaller.data.models.LocationModel
 import pl.podkal.citycaller.databinding.FragmentNewIncidentBinding
 import pl.podkal.citycaller.repeatedStarted
@@ -30,7 +34,9 @@ class NewIncidentFragment : Fragment() {
     private val binding get() = _binding!!
     private val MainVm by activityViewModels<MainViewModel>()
 
-    private lateinit var locationRequest: LocationRequest
+    private var locationRequest: LocationRequest = LocationRequest.create().apply {
+        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+    }
     private lateinit var susedLocation: FusedLocationProviderClient
     private val db = FirebaseFirestore.getInstance()
     private val locationCallback = object : LocationCallback() {
@@ -43,6 +49,15 @@ class NewIncidentFragment : Fragment() {
             )
             vm.updateLastLocation(lastLocationModel)
         }
+    }
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 100
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        susedLocation = LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
     override fun onCreateView(
@@ -62,12 +77,21 @@ class NewIncidentFragment : Fragment() {
     }
 
     private fun setupCollectors() {
-            repeatedStarted {
-                vm.lastLocation.collectLatest {
-                    if(it != null) vm.setButtonEnalbed(true)
+        repeatedStarted {
+            vm.lastLocation.collectLatest {
+                if (it != null) {
+                    Log.d("NewIncidentFragment", "Location received: $it")
+                    vm.setButtonEnalbed(true)
                 }
             }
+        }
 
+        repeatedStarted {
+            vm.isInsertButtonEnabled.collectLatest {
+                Log.d("NewIncidentFragment", "Insert button enabled: $it")
+                binding.addNewIncidentBtn.isEnabled = it
+            }
+        }
     }
 
     private fun setupOnCLicks() {
@@ -76,42 +100,112 @@ class NewIncidentFragment : Fragment() {
         }
 
         binding.addNewIncidentBtn.setOnClickListener {
-           if(MainVm.photoPath.isNotBlank())
-            addNewIncident(MainVm.photoPath)
+            val lastLocation = vm.lastLocation.value
+            if (lastLocation == null) {
+                Log.d("NewIncidentFragment", "Location not available, can't add incident")
+            } else {
+                Log.d("NewIncidentFragment", "Location available: $lastLocation")
+                if (MainVm.photoPath.isNotBlank())
+                    addNewIncident(MainVm.photoPath)
+                else
+                    Log.d("NewIncidentFragment", "Photo path is blank")
+            }
         }
     }
 
-    private fun addNewIncident(path: String) {
-        startLocalization()
 
+
+    private fun addNewIncident(path: String) {
         val userId = MainVm.user.value?.uid ?: throw Exception("User is null!")
         val desc = binding.incidentDescEt.text.toString()
 
+        val lastLocation = vm.lastLocation.value
+        if (lastLocation == null) {
+            Log.d("NewIncidentFragment", "Location not found, cannot add incident")
+            return
+        }
+
+        if (desc.isBlank()) {
+            Log.d("NewIncidentFragment", "Description cannot be empty")
+            return
+        }
+
+        val incident = IncidentModel(
+            userId = userId,
+            desc = desc,
+            location = lastLocation,
+            imageUrl = null,
+            reactions = 0
+        )
+
+        MainVm.insertIncident(incident, path)
+        Log.d("NewIncidentFragment", "Incident added with path: $path")
+        exitFragment()
+    }
+
+    private fun exitFragment() {
+        Log.d("NewIncidentFragment", "Navigating to mapFragment")
+        requireActivity().runOnUiThread {
+            findNavController().navigate(
+                R.id.mapFragment,
+                null,
+                navOptions {
+                    popUpTo(R.id.mapFragment) {
+                        inclusive = true
+                    }
+                }
+            )
+        }
+    }
+
+    private fun checkLocationPermission(): Boolean {
+        return ActivityCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestLocationPermission() {
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ),
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
     }
 
     private fun startLocalization() {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            throw Exception("No permission")
+        if (checkLocationPermission()) {
+            susedLocation.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.myLooper()
+            )
+        } else {
+            requestLocationPermission()
         }
-        susedLocation.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.myLooper()
-        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super. onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission was granted, start localization
+                startLocalization()
+            } else {
+                // Permission denied, show some message to the user
+                Log.e("NewIncidentFragment", "Permission denied for location")
+                throw Exception("No permission to access location")
+            }
+        }
     }
 
     override fun onDestroy() {

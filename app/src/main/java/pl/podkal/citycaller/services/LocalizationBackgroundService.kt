@@ -14,11 +14,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,14 +28,14 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 class LocalizationBackgroundService : Service() {
-
-    private val LOC_SERVICE_ID  = 1
-    private val LOC_SERVICE_DANGER_ID  = 2
+    private val LOC_SERVICE_ID = 1
+    private val LOC_SERVICE_DANGER_ID = 2
     private val LOC_CHANNEL_ID = "LOC_CHANNEL_ID"
-    private val UPDATE_INTERVAL_LOCATION: Long = 1_000 * 10
+    private val UPDATE_INTERVAL_LOCATION: Long = 10_000
     private lateinit var locationRequest: LocationRequest
-    private lateinit var susedLocation: FusedLocationProviderClient
+    private lateinit var fusedLocation: FusedLocationProviderClient
     private val db = FirebaseFirestore.getInstance()
+
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
@@ -48,17 +44,16 @@ class LocalizationBackgroundService : Service() {
                 locationResult.lastLocation?.latitude,
                 locationResult.lastLocation?.longitude
             )
-            CoroutineScope(Dispatchers.IO).launch {
-                if(isNearIncident(locationModel)) createWarningNotification()
 
+            CoroutineScope(Dispatchers.IO).launch {
+                if (isNearIncident(locationModel)) createWarningNotification()
             }
         }
     }
 
     private fun createWarningNotification() {
-
         val builder = NotificationCompat.Builder(this, LOC_CHANNEL_ID)
-            .setContentTitle("Uwaga, jestes w poblizu wydarzenia!")
+            .setContentTitle("Warning! Near an incident!")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .build()
@@ -75,141 +70,115 @@ class LocalizationBackgroundService : Service() {
     }
 
     private suspend fun isNearIncident(locationModel: LocationModel): Boolean {
-        db.collection("incidents")
+        val incidents = db.collection("incidents")
             .get()
             .await()
             .toObjects(IncidentModel::class.java)
-            .forEach { inc ->
-                if(calculateDistance(locationModel, inc.location) <= 1 ) return true
-            }
-        return false
 
+        for (incident in incidents) {
+            if (calculateDistance(locationModel, incident.location) <= 1) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun calculateDistance(userLocation: LocationModel, location: LocationModel?): Double {
-
-        userLocation.lat?: return -1.0
-        userLocation.lng?: return -1.0
-        val userLat = userLocation.lat
-        val userLng = userLocation.lng
-
-        location?.lat?: return -1.0
-        location?.lng?: return -1.0
-
-        val venueLat = location.lat
-        val venueLng = location.lng
-
-        val latDistance = Math.toRadians(userLat - venueLat)
-        val longDistance= Math.toRadians(userLng - venueLng)
-
-        val a = (sin(latDistance/ 2)
-                * sin(latDistance/ 2)
-                + (cos(Math.toRadians(userLat))
-                * cos(Math.toRadians(venueLat))
-                * sin(longDistance/ 2)
-                * sin(longDistance / 2)))
-
+        userLocation.lat ?: return -1.0
+        userLocation.lng ?: return -1.0
+        val venueLat = location?.lat ?: return -1.0
+        val venueLng = location.lng ?: return -1.0
+        val dLat = Math.toRadians(userLocation.lat!! - venueLat)
+        val dLng = Math.toRadians(userLocation.lng!! - venueLng)
+        val a = sin(dLat / 2) * sin(dLat / 2) +
+                cos(Math.toRadians(venueLat)) * cos(Math.toRadians(userLocation.lat!!)) *
+                sin(dLng / 2) * sin(dLng / 2)
         val c = 2 * Math.atan2(sqrt(a), sqrt(1 - a))
-
-        val result = 6371 * c
-        Log.d("LOC_D", "distance: $result")
-        return result
-
-
+        val distance = 6371 * c // Earth radius in kilometers
+        return distance
     }
 
-    override fun onBind(intent: Intent): IBinder? {
-        return null
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        intent?.action?.let {
+            if (it == "STOP_SERVICE") {
+                stopSelf() // Stop the service if the "STOP_SERVICE" action is received
+            }
+        }
+
+        startLocationUpdate()
+        prepareForegroundNotification()  // Initialize the foreground service
+        return START_NOT_STICKY
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        initData()
-    }
-
-    private fun initData() {
+    @SuppressLint("MissingPermission")
+    private fun startLocationUpdate() {
+        fusedLocation = LocationServices.getFusedLocationProviderClient(this)
         locationRequest = LocationRequest.Builder(
+            Priority.PRIORITY_HIGH_ACCURACY,
             UPDATE_INTERVAL_LOCATION
-        )
-            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-            .build()
+        ).build()
 
-        susedLocation = LocationServices.getFusedLocationProviderClient(applicationContext)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) return
+
+        fusedLocation.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        )
+    }
+
+    private fun prepareForegroundNotification() {
+        val stopIntent = Intent(this, LocalizationBackgroundService::class.java).apply {
+            action = "STOP_SERVICE"
+        }
+        val stopPendingIntent = PendingIntent.getService(
+            this,
+            0,
+            stopIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val builder = NotificationCompat.Builder(this, LOC_CHANNEL_ID)
+            .setContentTitle("City Caller Localization")
+            .setContentText("Localization is running")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .addAction(R.drawable.ic_launcher_foreground, "Stop", stopPendingIntent)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+
+        val channel = NotificationChannel(
+            LOC_CHANNEL_ID,
+            "LOC SERVICE",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+
+        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.createNotificationChannel(channel)
+
+        startForeground(LOC_SERVICE_ID, builder.build())
     }
 
     override fun stopService(name: Intent?): Boolean {
-        susedLocation.removeLocationUpdates(locationCallback)
+        fusedLocation.removeLocationUpdates(locationCallback)
+        val stopIntent = Intent("pl.podkal.citycaller.LOCALIZATION_STOPPED")
+        sendBroadcast(stopIntent)
+
+        // Remove the ongoing notification
+        stopForeground(true)  // Removes the foreground notification
+
         return super.stopService(name)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        susedLocation.removeLocationUpdates(locationCallback)
+        fusedLocation.removeLocationUpdates(locationCallback)
+        stopForeground(true) // Remove notification
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-       intent?.action?.let {
-           if(it=="STOP_SERVICE") stopSelf()
-       }
-
-        startLocationUpdate()
-        prepareForegorundNotification()
-        return START_NOT_STICKY
+    override fun onBind(intent: Intent?): IBinder? {
+        return null
     }
-
-    private fun startLocationUpdate() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-        susedLocation.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.myLooper()
-        )
-    }
-
-    @SuppressLint("ForegroundServiceType")
-    private fun prepareForegorundNotification() {
-        val serviceChannel = NotificationChannel(LOC_CHANNEL_ID,
-            "Location Service Channel",
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-
-        val manager = getSystemService(NotificationManager::class.java)
-        manager.createNotificationChannel(serviceChannel)
-
-        val stopSelfIntent = Intent(applicationContext, LocalizationBackgroundService
-        ::class.java).apply { action = "STOP_SERVICE"}
-
-        val pendingStopIntent = PendingIntent.getService(
-            applicationContext,
-            0,
-            stopSelfIntent,
-            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val notifcation = NotificationCompat.Builder(this, LOC_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("Serwis lokalizujacy")
-            .addAction(R.drawable.ic_launcher_foreground, "Zastopuj", pendingStopIntent)
-            .setOngoing(true)
-            .build()
-
-        startForeground(LOC_SERVICE_ID, notifcation)
-    }
-    }
-
+}
