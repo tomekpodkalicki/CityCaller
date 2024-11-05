@@ -6,4 +6,4 @@
     <string name="loginTextWhite"><font color="#ffffff"> Posiadasz już konto?</font> <font color="#f46700"><b>Zaloguj się</b></font> </string>
     <string name="registerText"><font color="#3d3d3d">Nie masz konta?</font> <font color="#f46700"><b>Zarejestruj się </b></font> </string>
     <string name="your_incidents">Twoje zgłoszenia</string>
-</resources>
+    <string name="google_maps_key">AIzaSyA6Ev1Q9yYsztHIumijpvhIpwRIaNMTTxg</string></resources>

@@ -8,9 +8,11 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import pl.podkal.citycaller.data.models.IncidentModel
 import pl.podkal.citycaller.data.models.UserModel
 import java.io.File
@@ -123,6 +125,13 @@ class FirebaseRepository {
                 }
                 it.set(incidentModel)
             }
+    }
+
+    suspend fun updateIncident(incidentModel: IncidentModel) = withContext(Dispatchers.IO) {
+        db
+            .collection("incidents")
+            .document(incidentModel.id ?: throw Exception("Incydent bez id"))
+            .set(incidentModel)
     }
 
     fun singOut() {

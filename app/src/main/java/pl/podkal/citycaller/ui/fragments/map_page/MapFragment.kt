@@ -51,11 +51,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        mainVm.loadAllIncidents()
+        super.onCreate(savedInstanceState)
+
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainVm.setBottomBarVisible(true)
         setupMap(savedInstanceState)
-        mainVm.loadAllIncidents()
         setupUi()
 
         requireActivity().registerReceiver(localStopReceiver, IntentFilter("pl.podkal.citycaller.LOCALIZATION_STOPPED"),
@@ -121,6 +127,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val customInfoAdap = WindowAdapter(requireContext())
 
         gmap.setInfoWindowAdapter(customInfoAdap)
+        gmap.setOnMarkerClickListener { marker ->
+            val selectedIncident = mainVm.allIncidents.value.find { it.markerId == marker.id}
+            if (selectedIncident != null) mainVm.setIncident(selectedIncident)
+            false
+        }
 
             repeatedStarted {
                 mainVm.allIncidents.collectLatest { list ->

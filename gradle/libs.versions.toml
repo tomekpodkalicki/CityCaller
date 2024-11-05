@@ -1,5 +1,5 @@
 [versions]
-agp = "8.6.1"
+agp = "8.7.2"
 cameraCamera2 = "1.3.4"
 cameraCore = "1.5.0-alpha01"
 cameraLifecycle = "1.3.4"

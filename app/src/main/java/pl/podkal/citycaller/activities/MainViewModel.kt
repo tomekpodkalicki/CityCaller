@@ -1,6 +1,5 @@
 package pl.podkal.citycaller.activities
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
@@ -42,8 +41,16 @@ class MainViewModel: ViewModel() {
     private val _user = MutableStateFlow(getCurrentUser())
     val user = _user.asStateFlow()
 
+
     private val _allIncidents = MutableStateFlow<List<IncidentModel>>(emptyList())
     val allIncidents = _allIncidents.asStateFlow()
+
+    private val _selectedIncident: MutableStateFlow<IncidentModel?> = MutableStateFlow(null)
+    val selectedIncident = _selectedIncident.asStateFlow()
+
+    fun setIncident(incident: IncidentModel?) {
+        _selectedIncident.value = incident
+    }
 
     private fun getCurrentUser():
             FirebaseUser? = repos.getCurrentUser()
@@ -101,6 +108,13 @@ class MainViewModel: ViewModel() {
 
     fun signOut() {
         repos.singOut()
+    }
+
+    fun updateIncident(incidentModel: IncidentModel) {
+        incidentModel ?: return
+        viewModelScope.launch {
+                repos.updateIncident(incidentModel)
+        }
     }
 
 
